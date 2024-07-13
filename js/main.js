@@ -5,9 +5,13 @@ const landPage = document.querySelector(".land-page");
 const random = Array.from(document.querySelectorAll(".random span"));
 const bullets = Array.from(document.querySelectorAll(".bulltets span"));
 const colors = Array.from(document.querySelectorAll(".colors li"));
+const ele = document.getElementById("sp");
+const skills = document.querySelectorAll(".our-skills .boxs .parent .prog");
 const rest = document.getElementById("reset");
 const menu = document.getElementById("menu-toggle");
 const links = document.querySelector(".links");
+const imgs = document.querySelectorAll(".imgs img");
+const imgPlace = document.querySelector(".our-gallery");
 if (localStorage.getItem("page-color")) {
   document.documentElement.style.setProperty(
     "--main-color",
@@ -87,7 +91,6 @@ random.forEach((ele) => {
       try {
         clearInterval(change);
       } catch (e) {
-        clearInterval(change);
         console.log(e);
       }
       dointerval();
@@ -122,3 +125,54 @@ document.addEventListener("click", (e) => {
     }
   }
 });
+
+let observer = new IntersectionObserver(
+  (entries, observer) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        console.log("hello");
+
+        skills.forEach((skill) => {
+          skill.style.width = skill.dataset.prog;
+        });
+        observer.unobserve(entry.target); // لإيقاف المراقبة بعد الحدث الأول
+      }
+    });
+  },
+  { threshold: 0.5 }
+);
+observer.observe(ele);
+imgs.forEach((element) => {
+  element.addEventListener("click", openImg);
+});
+
+function openImg() {
+  let overlay = document.createElement("div");
+  let show = document.createElement("div");
+  let it = document.createElement("img");
+  let pop = document.createElement("div");
+  pop.append("X");
+  pop.style.cssText =
+    "cursor: pointer;top: 0%;position: absolute;background-color: rgb(255, 0, 0);left: 0%;transform: translate(-50%, -50%);border-radius: 50%;color: white;width: 29px;font-weight: bold;font-size: 20px;height: 29px;display: flex;text-align: center;justify-content: center;align-items: center;";
+  it.src = this.src;
+  it.style.width = "100%";
+  show.className = "project";
+  show.style.cssText =
+    "padding:10px ; top:50% ;position : absolute ;background-color:rgb(255,255,255);left:50%;transform:translate(-50% ,-50%);width:75%";
+
+  overlay.style.cssText = style =
+    "position: fixed ; top:0; left:0;width: 100% ;height: 100%;background-color: rgba(0, 0, 0, .7);z-index=10000";
+  show.append(pop);
+
+  pop.addEventListener("click", (e) => {
+    e.stopPropagation();
+    console.log("removed");
+    it.remove();
+    show.remove();
+    overlay.remove();
+    pop.remove();
+  });
+  show.append(it);
+  overlay.append(show);
+  document.body.append(overlay);
+}
